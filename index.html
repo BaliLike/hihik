@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>С 8 Марта, любимая! 🌸</title>
+    <!-- Подключаем стили -->
+    <link rel="stylesheet" href="css.css">
+    <!-- Подключаем Font Awesome для иконок (бесплатно) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <!-- Анимированные цветы на фоне (появятся через CSS) -->
+    <div class="floating-flowers">
+        <div class="flower flower-1">🌸</div>
+        <div class="flower flower-2">🌼</div>
+        <div class="flower flower-3">🌷</div>
+        <div class="flower flower-4">🌸</div>
+        <div class="flower flower-5">🌺</div>
+    </div>
+
+    <div class="container">
+        <!-- Шапка с красивым градиентом и именем -->
+        <div class="hero">
+            <div class="hero-content">
+                <span class="badge">С 8 Марта ❤️</span>
+                <h1 class="name-title">Натка Мармеладка</h1>
+                <div class="typing-effect">Ты — прекрасна!</div>
+            </div>
+        </div>
+
+        <!-- Интерактивное письмо-признание (появляется при нажатии) -->
+        <div class="section letter-section">
+            <div class="section-header">
+                <i class="fas fa-envelope-open-text"></i>
+                <h2>Моё письмо тебе</h2>
+            </div>
+            <div class="letter-preview" onclick="toggleLetter()">
+                <p>Нажми, чтобы прочитать...</p>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="letter-full" id="fullLetter">
+                <p>Моя родная,</p>
+                <p>В этот весенний день хочу сказать тебе самое главное... Каждое утро я просыпаюсь и благодарю судьбу за то, что наши дорожки сошлись. Твоя улыбка освещает мою день ярче любого солнца, а смех звучит для меня самой прекрасной мелодией.</p>
+                <p>Ты делаешь этот мир лучше просто тем, что существуешь. Спасибо тебе за тепло, заботу, за то, и что ты веришь в меня. С 8 Марта, моя весна! Пусть эта весна принесёт тебе столько счастья, сколько лепестков у цветущей сакуры.</p>
+                <p class="signature">Твой? Даня</p>
+            </div>
+        </div>
+
+        <!-- Галерея Polaroid-стиль -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-images"></i>
+                <h2>Наши драгоценные моменты (их пока мало, но будет больше!)</h2>
+            </div>
+            <div class="polaroid-gallery">
+                <div class="polaroid">
+                    <img src="images/1.jpg" alt="Фото 1">
+                    <div class="caption">Наши рисуночки</div>
+                </div>
+                <div class="polaroid">
+                    <img src="images/4.jpg" alt="Фото 2">
+                    <div class="caption">Твоя голова</div>
+                </div>
+                <div class="polaroid">
+                    <img src="images/3.jpg" alt="Фото 3">
+                    <div class="caption">Моя голова</div>
+                </div>
+                <div class="polaroid">
+                    <img src="images/2.jpg" alt="Фото 4">
+                    <div class="caption">Мы вместе(Пока единственная фотка ) ❤️</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Список "100 причин" в красивых карточках (сокращённый вариант) -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-heart"></i>
+                <h2>100 причин полюбить тебя</h2>
+            </div>
+            <div class="reasons-grid">
+                <div class="reason-card">
+                    <span class="reason-number">01</span>
+                    <span>За яркую улыбку</span>
+                </div>
+                <div class="reason-card">
+                    <span class="reason-number">02</span>
+                    <span>За то, как ты смотришь на меня</span>
+                </div>
+                <div class="reason-card">
+                    <span class="reason-number">03</span>
+                    <span>За твои объятия</span>
+                </div>
+                <div class="reason-card">
+                    <span class="reason-number">04</span>
+                    <span>За то, что веришь в меня</span>
+                </div>
+                <div class="reason-card">
+                    <span class="reason-number">05</span>
+                    <span>За твою милотуrrrr</span>
+                </div>
+                <div class="reason-card">
+                    <span class="reason-number">06</span>
+                    <span>... и ещё 94 причины, которые я скажу лично</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Интерактивный букет (цветы, которые можно собирать) -->
+        <div class="section flower-bouquet-section">
+            <div class="section-header">
+                <i class="fas fa-flower"></i>
+                <h2>Собери свой букет</h2>
+                <p class="subtitle">Нажимай на цветочки ❤️</p>
+            </div>
+            <div class="flower-bouquet" id="bouquet">
+                <div class="flower-item" onclick="pickFlower(this)">
+                    🌷
+                    <span class="flower-message hidden">Ты нежная, как тюльпан</span>
+                </div>
+                <div class="flower-item" onclick="pickFlower(this)">
+                    🌸
+                    <span class="flower-message hidden">Ты прекрасна, как сакура</span>
+                </div>
+                <div class="flower-item" onclick="pickFlower(this)">
+                    🌼
+                    <span class="flower-message hidden">Ты светишься, как солнышко</span>
+                </div>
+                <div class="flower-item" onclick="pickFlower(this)">
+                    🌺
+                    <span class="flower-message hidden">Ты яркая, как гибискус</span>
+                </div>
+                <div class="flower-item" onclick="pickFlower(this)">
+                    🌹
+                    <span class="flower-message hidden">Ты страстная, как роза</span>
+                </div>
+            </div>
+            <div class="picked-message" id="pickedMessage"></div>
+        </div>
+
+        <!-- Плеер с особым треком (можно заменить на вашу песню) -->
+        <div class="section music-section">
+            <div class="section-header">
+                <i class="fas fa-music"></i>
+                <h2>Песня, для твоего вайбика:)</h2>
+            </div>
+            <div class="music-player">
+                <div class="album-cover">
+                    <i class="fas fa-play-circle" id="playBtn" onclick="playMusic()"></i>
+                </div>
+                <div class="track-info">
+                    <div class="track-name">Боже, какой пустяк</div>
+                    <div class="artist-name">Татьяна Куртукова</div>
+                </div>
+            </div>
+            <audio id="bgMusic" src="mus.mp3"></audio>
+        </div>
+
+        <!-- Футер с обратным отсчётом до весны (просто для красоты) -->
+        <div class="footer">
+            <p>С самыми теплыми чувствами, твой? Данилка</p>
+            <p class="spring-countdown" id="countdown"></p>
+        </div>
+    </div>
+
+    <!-- Небольшой скрипт для интерактива -->
+    <script>
+        // Открыть/закрыть письмо
+        function toggleLetter() {
+            const letter = document.getElementById('fullLetter');
+            const preview = document.querySelector('.letter-preview i');
+            if (letter.style.display === 'block') {
+                letter.style.display = 'none';
+                preview.className = 'fas fa-chevron-down';
+            } else {
+                letter.style.display = 'block';
+                preview.className = 'fas fa-chevron-up';
+            }
+        }
+
+        // Собрать цветок
+        function pickFlower(element) {
+            const message = element.querySelector('.flower-message');
+            const pickedDiv = document.getElementById('pickedMessage');
+            
+            if (message.classList.contains('hidden')) {
+                message.classList.remove('hidden');
+                pickedDiv.innerHTML = '❤️ ' + message.textContent;
+                
+                // Цветок исчезает (эффект, что его сорвали)
+                element.style.opacity = '0.5';
+                element.style.transform = 'scale(0.9)';
+            }
+        }
+
+        // Плей/пауза музыки
+        function playMusic() {
+            const audio = document.getElementById('bgMusic');
+            const btn = document.getElementById('playBtn');
+            
+            if (audio.paused) {
+                audio.play();
+                btn.className = 'fas fa-pause-circle';
+            } else {
+                audio.pause();
+                btn.className = 'fas fa-play-circle';
+            }
+        }
+
+        // Простой обратный отсчёт (необязательно)
+        function updateCountdown() {
+            const now = new Date();
+            const nextSpring = new Date(now.getFullYear() + 1, 2, 1); // 1 марта следующего года
+            const diff = nextSpring - now;
+            
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                document.getElementById('countdown').textContent = `До следующей весны ${days} дней, но ты цветёшь круглый год 🌸`;
+            }
+        }
+        
+        updateCountdown();
+    </script>
+</body>
+</html>
