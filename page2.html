@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Натка — Моя Вселенная 🌙</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --gold: #f5c842;
+            --rose: #e8a2b0;
+            --cream: #f9f0e1;
+            --dark: #090914;
+            --glass: rgba(255,255,255,0.04);
+            --glass-border: rgba(245,200,66,0.18);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+            overflow-x: hidden;
+        }
+
+        @media (hover: hover) {
+            body { cursor: none; }
+        }
+
+        /* ── CURSOR ── */
+        .cursor {
+            width: 10px; height: 10px;
+            background: var(--gold);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: screen;
+            transition: transform 0.08s ease;
+            display: none;
+        }
+
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: sfade 0.9s ease-out forwards;
+        }
+
+        @keyframes sfade {
+            0%   { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%,-50%) scale(0); }
+        }
+
+        /* ── CANVAS ── */
+        #starCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+
+        /* ── CONTAINER ── */
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(245,200,66,0.06) 0%, transparent 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            border-radius: 50%;
+            animation: nebula 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes nebula {
+            0%,100% { transform: translate(-50%,-50%) scale(1); }
+            50%      { transform: translate(-50%,-50%) scale(1.25); }
+        }
+
+        .hero-badge {
+            display: inline-block;
+            border: 1px solid rgba(245,200,66,0.35);
+            padding: 8px 26px;
+            border-radius: 100px;
+            font-size: 0.68rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 44px;
+            backdrop-filter: blur(10px);
+            background: rgba(245,200,66,0.04);
+        }
+
+        .hero-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(4.5rem, 16vw, 9rem);
+            font-weight: 300;
+            line-height: 0.95;
+            margin-bottom: 28px;
+            background: linear-gradient(135deg, #f5c842 0%, #e8a2b0 50%, #f5c842 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0%   { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .hero-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+            font-style: italic;
+            color: rgba(249,240,225,0.55);
+            letter-spacing: 1px;
+            min-height: 2rem;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px; left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            color: rgba(245,200,66,0.4);
+            font-size: 0.62rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .scroll-line {
+            width: 1px; height: 56px;
+            background: linear-gradient(to bottom, rgba(245,200,66,0.5), transparent);
+            animation: spulse 2s ease-in-out infinite;
+        }
+
+        @keyframes spulse {
+            0%,100% { opacity: 1; transform: scaleY(1); }
+            50%      { opacity: 0.4; transform: scaleY(0.6); }
+        }
+
+        /* ── SECTIONS ── */
+        .section { padding: 80px 0; }
+
+        .section-badge {
+            display: block;
+            font-size: 0.65rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--rose);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 300;
+            line-height: 1.15;
+        }
+
+        .divider {
+            width: 56px; height: 2px;
+            background: linear-gradient(to right, var(--gold), var(--rose));
+            margin: 20px 0 40px;
+        }
+
+        /* ── FLIP CARDS ── */
+        .flip-hint-global {
+            font-size: 0.72rem;
+            color: rgba(249,240,225,0.3);
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+        }
+
+        .flip-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .flip-card {
+            perspective: 1000px;
+            height: 185px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%; height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .flip-card-front {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            transition: border-color 0.3s;
+        }
+
+        .flip-card:hover .flip-card-front {
+            border-color: rgba(245,200,66,0.35);
+        }
+
+        .flip-card-back {
+            background: linear-gradient(135deg, rgba(245,200,66,0.12), rgba(232,162,176,0.12));
+            border: 1px solid rgba(245,200,66,0.35);
+            backdrop-filter: blur(12px);
+            transform: rotateY(180deg);
+        }
+
+        .card-emoji { font-size: 2.6rem; margin-bottom: 8px; }
+
+        .card-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            color: rgba(249,240,225,0.65);
+        }
+
+        .card-tap {
+            font-size: 0.58rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(249,240,225,0.2);
+            margin-top: 6px;
+        }
+
+        .card-back-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1rem;
+            color: var(--gold);
+            line-height: 1.55;
+        }
+
+        /* ── JOY COUNTER ── */
+        .joy-section { text-align: center; }
+
+        .counter-wrap {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 44px 64px;
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            backdrop-filter: blur(12px);
+            background: var(--glass);
+            margin: 32px 0;
+            position: relative;
+        }
+
+        .counter-wrap::before,
+        .counter-wrap::after {
+            content: '✦';
+            position: absolute;
+            color: rgba(245,200,66,0.3);
+            font-size: 0.8rem;
+        }
+
+        .counter-wrap::before { top: 16px; left: 20px; }
+        .counter-wrap::after  { bottom: 16px; right: 20px; }
+
+        .counter-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(4.5rem, 16vw, 7.5rem);
+            font-weight: 300;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--gold), var(--rose));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .counter-label {
+            font-size: 0.68rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(249,240,225,0.4);
+        }
+
+        .joy-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.1rem, 3vw, 1.35rem);
+            font-style: italic;
+            color: rgba(249,240,225,0.6);
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.85;
+        }
+
+        /* ── GALLERY ── */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 40px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+        }
+
+        .gallery-item img {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 2;
+            display: none;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item img.img-ok { display: block; }
+
+        .gallery-item:hover img.img-ok { transform: scale(1.05); }
+
+        .g-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(9,9,20,0.85) 0%, transparent 55%);
+            display: flex;
+            align-items: flex-end;
+            padding: 18px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 3;
+        }
+
+        .gallery-item:hover .g-overlay { opacity: 1; }
+
+        .g-caption {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            color: var(--cream);
+            font-size: 1rem;
+        }
+
+        .g-placeholder {
+            position: absolute; inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            z-index: 1;
+        }
+
+        .g-placeholder .ph-star {
+            font-size: 1.8rem;
+            color: rgba(245,200,66,0.12);
+            animation: glow-ph 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-ph {
+            0%,100% { opacity: 0.4; }
+            50%      { opacity: 1; }
+        }
+
+        .g-placeholder span {
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(249,240,225,0.12);
+        }
+
+        /* ── LOVE TEXT ── */
+        .love-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.15rem, 3vw, 1.35rem);
+            line-height: 2;
+            color: rgba(249,240,225,0.72);
+        }
+
+        .love-text .hl-gold {
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        .love-text .hl-rose {
+            color: var(--rose);
+            font-style: italic;
+        }
+
+        /* ── TOGETHER CARDS ── */
+        .together-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 40px;
+        }
+
+        .together-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 22px;
+            padding: 28px 20px;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            text-align: center;
+            transition: all 0.35s ease;
+        }
+
+        .together-card:hover {
+            background: rgba(245,200,66,0.07);
+            border-color: rgba(245,200,66,0.35);
+            transform: translateY(-6px);
+        }
+
+        .tc-emoji { font-size: 2.6rem; }
+
+        .tc-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: var(--gold);
+        }
+
+        .tc-desc {
+            font-size: 0.82rem;
+            color: rgba(249,240,225,0.5);
+            line-height: 1.65;
+        }
+
+        /* ── LOVE BUTTON SECTION ── */
+        .love-btn-section {
+            text-align: center;
+            padding: 70px 0 80px;
+        }
+
+        .love-btn-hint {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: rgba(249,240,225,0.4);
+            margin-bottom: 30px;
+        }
+
+        .love-btn {
+            border: none;
+            background: linear-gradient(135deg, var(--gold), var(--rose));
+            color: #1a0a2e;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            font-weight: 600;
+            padding: 20px 52px;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .love-btn::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: rgba(255,255,255,0.15);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .love-btn:hover::after { opacity: 1; }
+        .love-btn:hover { transform: scale(1.06); box-shadow: 0 0 50px rgba(245,200,66,0.35); }
+        .love-btn:active { transform: scale(0.97); }
+
+        /* ── HEART PARTICLES ── */
+        .heart-p {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9997;
+            animation: heartfly var(--dur, 1.4s) ease-out forwards;
+        }
+
+        @keyframes heartfly {
+            0%   { transform: translate(0,0) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--tx),var(--ty)) scale(0) rotate(var(--rot)); opacity: 0; }
+        }
+
+        /* ── BACK ── */
+        .back-wrap {
+            text-align: center;
+            padding-bottom: 50px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(249,240,225,0.35);
+            text-decoration: none;
+            font-size: 0.72rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border: 1px solid rgba(249,240,225,0.15);
+            padding: 12px 26px;
+            border-radius: 100px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--gold);
+            border-color: rgba(245,200,66,0.35);
+        }
+
+        /* ── FOOTER ── */
+        .page-footer {
+            text-align: center;
+            padding: 36px 20px 50px;
+            border-top: 1px solid rgba(245,200,66,0.08);
+        }
+
+        .page-footer .f-line {
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: rgba(249,240,225,0.2);
+        }
+
+        .page-footer .f-sign {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: rgba(249,240,225,0.4);
+            margin-top: 10px;
+        }
+
+        /* ── SCROLL REVEAL ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(36px);
+            transition: opacity 0.85s ease, transform 0.85s ease;
+        }
+
+        .reveal.vis { opacity: 1; transform: translateY(0); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 500px) {
+            .flip-grid { grid-template-columns: repeat(2, 1fr); }
+            .together-grid { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .counter-wrap { padding: 32px 40px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<canvas id="starCanvas"></canvas>
+
+<div class="container">
+
+    <!-- ── HERO ── -->
+    <section class="hero">
+        <span class="hero-badge">✦ Только для тебя ✦</span>
+        <h1 class="hero-name">Натка</h1>
+        <p class="hero-subtitle" id="typeTarget"></p>
+        <div class="scroll-hint">
+            <span>Листай вниз</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ── ADMIRE ── -->
+    <section class="section reveal">
+        <span class="section-badge">✦ Восхищение</span>
+        <h2 class="section-title">Ты восхищаешь<br>меня</h2>
+        <div class="divider"></div>
+        <p class="flip-hint-global">Нажимай на карточки ✦</p>
+
+        <div class="flip-grid">
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="card-emoji">👁️</div>
+                        <div class="card-label">Твои глаза</div>
+                        <div class="card-tap">нажми</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="card-back-text">Восхитительные. Я каждый раз теряюсь в них — честно.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="card-emoji">💋</div>
+                        <div class="card-label">Твои губы</div>
+                        <div class="card-tap">нажми</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="card-back-text">Поцеловать тебя — лучшее занятие в мире. Без преувеличений.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="card-emoji">😊</div>
+                        <div class="card-label">Твоя улыбка</div>
+                        <div class="card-tap">нажми</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="card-back-text">Когда ты улыбаешься — весь мир становится лучше. Вот так просто.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="card-emoji">😄</div>
+                        <div class="card-label">Твой смех</div>
+                        <div class="card-tap">нажми</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="card-back-text">Заразительный, настоящий — мой любимый звук на свете.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="card-emoji">🍑</div>
+                        <div class="card-label">Твоя попка</div>
+                        <div class="card-tap">нажми</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="card-back-text">Ну это отдельный шедевр, я тебе скажу 😏</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="card-emoji">✨</div>
+                        <div class="card-label">Ты вся</div>
+                        <div class="card-tap">нажми</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="card-back-text">Люблю тебя всю целиком — каждую черточку, каждый изгиб.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── JOY COUNTER ── -->
+    <section class="section joy-section reveal" id="joySection">
+        <span class="section-badge">✦ Каждый день</span>
+        <h2 class="section-title">Ты приносишь мне<br>радость</h2>
+        <div class="divider"></div>
+
+        <div class="counter-wrap">
+            <div class="counter-num" id="daysNum">0</div>
+            <div class="counter-label">дней счастья вместе</div>
+        </div>
+
+        <p class="joy-quote">
+            «Каждое утро я просыпаюсь с мыслью о тебе —<br>
+            и это лучшее начало дня, которое только можно придумать.»
+        </p>
+    </section>
+
+    <!-- ── GALLERY ── -->
+    <section class="section reveal">
+        <span class="section-badge">✦ Наши моменты</span>
+        <h2 class="section-title">Мы с тобой</h2>
+        <div class="divider"></div>
+
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="images2/1.jpg" alt="" data-caption="Наш момент">
+                <div class="g-overlay"><span class="g-caption">Наш момент</span></div>
+                <div class="g-placeholder"><div class="ph-star">✦</div><span>Скоро здесь</span></div>
+            </div>
+            <div class="gallery-item">
+                <img src="images2/2.jpg" alt="" data-caption="Ты и я">
+                <div class="g-overlay"><span class="g-caption">Ты и я</span></div>
+                <div class="g-placeholder"><div class="ph-star">✦</div><span>Скоро здесь</span></div>
+            </div>
+            <div class="gallery-item">
+                <img src="images2/3.jpg" alt="" data-caption="Счастье рядом">
+                <div class="g-overlay"><span class="g-caption">Счастье рядом</span></div>
+                <div class="g-placeholder"><div class="ph-star">✦</div><span>Скоро здесь</span></div>
+            </div>
+            <div class="gallery-item">
+                <img src="images2/4.jpg" alt="" data-caption="Всё лучшее">
+                <div class="g-overlay"><span class="g-caption">Всё лучшее</span></div>
+                <div class="g-placeholder"><div class="ph-star">✦</div><span>Скоро здесь</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── LOVE YOU FULLY ── -->
+    <section class="section reveal">
+        <span class="section-badge">✦ От всего сердца</span>
+        <h2 class="section-title">Я люблю тебя<br>полностью</h2>
+        <div class="divider"></div>
+
+        <p class="love-text">
+            Ты <span class="hl-gold">самая крутая на свете</span> — и это не просто слова.<br><br>
+            Мне нравятся твои увлечения, твой мир, твои интересы —
+            <span class="hl-rose">я хочу знать тебя всю</span>, снова и снова.<br><br>
+            Ты делаешь мою жизнь ярче. <span class="hl-gold">Каждый день.</span>
+            Просто существуя рядом.<br><br>
+            Твои <span class="hl-rose">восхитительные глаза</span>, твои
+            <span class="hl-gold">губы</span>, твоя улыбка, твой смех —
+            <span class="hl-rose">люблю тебя всю, без остатка.</span>
+        </p>
+    </section>
+
+    <!-- ── TOGETHER ── -->
+    <section class="section reveal">
+        <span class="section-badge">✦ Вместе</span>
+        <h2 class="section-title">Мне нравится<br>с тобой</h2>
+        <div class="divider"></div>
+
+        <div class="together-grid">
+            <div class="together-card">
+                <div class="tc-emoji">🛋️</div>
+                <div class="tc-title">Просто сидеть</div>
+                <div class="tc-desc">Ничего не делать, но вместе — и это уже счастье</div>
+            </div>
+            <div class="together-card">
+                <div class="tc-emoji">🌙</div>
+                <div class="tc-title">Лежать рядом</div>
+                <div class="tc-desc">Тихие моменты, когда всё на своём месте</div>
+            </div>
+            <div class="together-card">
+                <div class="tc-emoji">💋</div>
+                <div class="tc-title">Целоваться</div>
+                <div class="tc-desc">Ну это вообще любимое занятие, если честно 😌</div>
+            </div>
+            <div class="together-card">
+                <div class="tc-emoji">🌟</div>
+                <div class="tc-title">Просто быть рядом</div>
+                <div class="tc-desc">Лучшее, что есть в моей жизни — это ты</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── LOVE BUTTON ── -->
+    <section class="love-btn-section reveal">
+        <p class="love-btn-hint">Нажми, если чувствуешь то же самое</p>
+        <button class="love-btn" id="loveBtn">❤️ Я тоже тебя люблю ❤️</button>
+    </section>
+
+    <!-- ── BACK ── -->
+    <div class="back-wrap">
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Вернуться к началу
+        </a>
+    </div>
+
+    <!-- ── FOOTER ── -->
+    <footer class="page-footer">
+        <div class="f-line">Сделано с любовью и звёздами ✦</div>
+        <div class="f-sign">— твой Данилка</div>
+    </footer>
+
+</div>
+
+<script>
+// ── STARS CANVAS ──
+const canvas = document.getElementById('starCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, stars = [];
+
+function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function mkStars(n) {
+    stars = [];
+    for (let i = 0; i < n; i++) {
+        stars.push({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            r: Math.random() * 1.4 + 0.2,
+            phase: Math.random() * Math.PI * 2,
+            speed: Math.random() * 0.02 + 0.008
+        });
+    }
+}
+mkStars(220);
+
+function drawStars() {
+    ctx.clearRect(0, 0, W, H);
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#090914');
+    g.addColorStop(1, '#11102a');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    const t = Date.now() * 0.001;
+    stars.forEach(s => {
+        const a = (Math.sin(t * s.speed * 20 + s.phase) + 1) / 2 * 0.75 + 0.2;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(249,240,225,${a})`;
+        ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+}
+drawStars();
+
+// ── CUSTOM CURSOR ──
+const cursorEl = document.getElementById('cursor');
+const supportsHover = window.matchMedia('(hover: hover)').matches;
+if (supportsHover) cursorEl.style.display = 'block';
+
+document.addEventListener('mousemove', e => {
+    if (!supportsHover) return;
+    cursorEl.style.left = e.clientX + 'px';
+    cursorEl.style.top  = e.clientY + 'px';
+    if (Math.random() > 0.55) addSparkle(e.clientX, e.clientY);
+});
+
+function addSparkle(x, y) {
+    const el = document.createElement('div');
+    el.className = 'sparkle';
+    const sz = Math.random() * 5 + 2;
+    const cols = ['#f5c842','#e8a2b0','#f9f0e1','#fff'];
+    el.style.cssText = `left:${x}px;top:${y}px;width:${sz}px;height:${sz}px;background:${cols[Math.floor(Math.random()*4)]}`;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 900);
+}
+
+// ── TYPEWRITER ──
+const phrases = [
+    'Ты — моя вселенная',
+    'Самая крутая на свете',
+    'Ты приносишь мне радость',
+    'Я люблю тебя'
+];
+let pIdx = 0, cIdx = 0, deleting = false;
+const typeEl = document.getElementById('typeTarget');
+
+function type() {
+    const cur = phrases[pIdx];
+    typeEl.textContent = cur.substring(0, cIdx);
+
+    if (!deleting && cIdx === cur.length) {
+        deleting = true;
+        setTimeout(type, 2400);
+        return;
+    }
+    if (deleting && cIdx === 0) {
+        deleting = false;
+        pIdx = (pIdx + 1) % phrases.length;
+        setTimeout(type, 350);
+        return;
+    }
+
+    deleting ? cIdx-- : cIdx++;
+    setTimeout(type, deleting ? 45 : 85);
+}
+setTimeout(type, 900);
+
+// ── DAYS COUNTER ──
+let counted = false;
+function animateCounter() {
+    if (counted) return;
+    counted = true;
+    const start = new Date('2026-03-08');
+    const days = Math.max(0, Math.floor((Date.now() - start) / 86400000));
+    const el = document.getElementById('daysNum');
+    let cur = 0;
+    const step = Math.max(1, Math.ceil(days / 60));
+    const iv = setInterval(() => {
+        cur = Math.min(cur + step, days);
+        el.textContent = cur;
+        if (cur >= days) clearInterval(iv);
+    }, 28);
+}
+
+// ── SCROLL REVEAL ──
+const revealEls = document.querySelectorAll('.reveal');
+const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.classList.add('vis');
+            if (e.target.id === 'joySection') animateCounter();
+        }
+    });
+}, { threshold: 0.12 });
+revealEls.forEach(el => ro.observe(el));
+
+// ── GALLERY ──
+document.querySelectorAll('.gallery-item img').forEach(img => {
+    img.onload = () => {
+        img.classList.add('img-ok');
+        const ph = img.closest('.gallery-item').querySelector('.g-placeholder');
+        if (ph) ph.style.display = 'none';
+    };
+    img.onerror = () => img.remove();
+    if (img.complete && img.naturalWidth > 0) img.onload();
+});
+
+// ── HEART BURST ──
+const loveBtn = document.getElementById('loveBtn');
+const emojis = ['❤️','💕','💖','💗','💓','💝','✨','🌟','💫','🌸'];
+
+loveBtn.addEventListener('click', e => {
+    const rect = loveBtn.getBoundingClientRect();
+    const bx = rect.left + rect.width / 2;
+    const by = rect.top  + rect.height / 2;
+
+    for (let i = 0; i < 24; i++) {
+        const h = document.createElement('div');
+        h.className = 'heart-p';
+        h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        const ang = Math.random() * Math.PI * 2;
+        const dist = Math.random() * 220 + 80;
+        const tx = Math.cos(ang) * dist;
+        const ty = Math.sin(ang) * dist - 80;
+        const rot = (Math.random() - 0.5) * 360;
+        const dur = (Math.random() * 0.6 + 1.1).toFixed(2);
+        h.style.cssText = `
+            left:${bx}px; top:${by}px;
+            font-size:${(Math.random()*1.4+0.7).toFixed(1)}rem;
+            --tx:${tx}px; --ty:${ty}px; --rot:${rot}deg; --dur:${dur}s;
+            animation-delay:${(Math.random()*0.25).toFixed(2)}s;
+        `;
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), (parseFloat(dur) + 0.5) * 1000);
+    }
+});
+</script>
+</body>
+</html>

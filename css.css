@@ -372,6 +372,28 @@ body {
     color: #b33b5c;
 }
 
+/* Секретная звезда в футере */
+.secret-star {
+    display: inline-block;
+    margin-top: 18px;
+    color: rgba(179, 59, 92, 0.25);
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    animation: star-breathe 4s ease-in-out infinite;
+}
+
+.secret-star:hover {
+    color: #d64b6b;
+    text-shadow: 0 0 12px rgba(214,75,107,0.7);
+    transform: scale(1.3) rotate(20deg);
+}
+
+@keyframes star-breathe {
+    0%,100% { opacity: 0.25; }
+    50%      { opacity: 0.5; }
+}
+
 /* Адаптация для маленьких экранов */
 @media (max-width: 400px) {
     .name-title {
